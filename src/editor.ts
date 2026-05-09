@@ -26,6 +26,7 @@ const LABELS: Record<string, string> = {
   show_modes: 'Show HVAC mode buttons',
   show_preset: 'Show preset modes',
   show_fan: 'Show fan modes',
+  full_width: 'Full-width layout',
   min_temp: 'Min temperature override',
   max_temp: 'Max temperature override',
 };
@@ -35,6 +36,8 @@ const HELPERS: Record<string, string> = {
     'Wait this long after the last +/- tap before sending to Home Assistant. Higher = fewer service calls during rapid clicking.',
   step: 'Increment per +/- tap (e.g. 0.5 or 1.0).',
   show_current: 'Display the current room temperature in the header.',
+  full_width:
+    'Lay out the card as a wide row: target temp on the left, mode chips on the right. Falls back to the stacked layout on narrow widths.',
   min_temp: 'Leave empty to use the entity defaults.',
   max_temp: 'Leave empty to use the entity defaults.',
 };
@@ -92,6 +95,7 @@ export class SmoothThermostatCardEditor extends LitElement implements LovelaceCa
           { name: 'show_modes', default: true, selector: { boolean: {} } },
           { name: 'show_preset', default: false, selector: { boolean: {} } },
           { name: 'show_fan', default: false, selector: { boolean: {} } },
+          { name: 'full_width', default: false, selector: { boolean: {} } },
         ],
       },
       {

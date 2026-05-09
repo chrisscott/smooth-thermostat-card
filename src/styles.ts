@@ -51,6 +51,27 @@ export const cardStyles = css`
     flex-shrink: 0;
   }
 
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .targets {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
   .target {
     display: flex;
     align-items: center;
@@ -206,6 +227,56 @@ export const cardStyles = css`
     padding: 12px;
     color: var(--error-color, #db4437);
     font-size: 13px;
+  }
+
+  /* Full-width: side-by-side targets and controls when there's room */
+  @container (min-width: 380px) {
+    ha-card.full-width .body {
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+    }
+    ha-card.full-width .targets {
+      flex: 1 1 50%;
+    }
+    ha-card.full-width .controls {
+      flex: 1 1 50%;
+      align-self: stretch;
+      justify-content: center;
+    }
+    ha-card.full-width .targets:only-child {
+      flex-basis: 100%;
+    }
+    ha-card.full-width .row {
+      justify-content: flex-start;
+      gap: 6px;
+    }
+    ha-card.full-width .temp {
+      font-size: 36px;
+    }
+    ha-card.full-width .temp.range {
+      font-size: 26px;
+    }
+    ha-card.full-width .temp .unit {
+      font-size: 18px;
+    }
+    ha-card.full-width .temp.range .unit {
+      font-size: 14px;
+    }
+  }
+
+  @container (min-width: 560px) {
+    ha-card.full-width .temp {
+      font-size: 44px;
+    }
+    ha-card.full-width .temp.range {
+      font-size: 32px;
+    }
+    ha-card.full-width .step {
+      width: 40px;
+      height: 40px;
+      --mdc-icon-size: 22px;
+    }
   }
 
   /* Compact mode for narrow cards (mobile, 2-up) */

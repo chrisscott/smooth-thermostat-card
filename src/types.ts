@@ -8,6 +8,7 @@ export interface SmoothThermostatCardConfig extends LovelaceCardConfig {
   show_modes?: boolean;
   show_preset?: boolean;
   show_fan?: boolean;
+  full_width?: boolean;
   step?: number;
   debounce_ms?: number;
   min_temp?: number;

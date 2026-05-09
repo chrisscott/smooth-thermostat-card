@@ -78,6 +78,7 @@ debounce_ms: 750
 | `show_modes`   | boolean | `true`           | Show HVAC mode buttons (heat / cool / off / etc.)            |
 | `show_preset`  | boolean | `false`          | Show preset mode chips (eco / comfort / away)                |
 | `show_fan`     | boolean | `false`          | Show fan mode chips                                          |
+| `full_width`   | boolean | `false`          | Wide layout: target temp on the left, chips on the right (stacks on narrow widths) |
 | `step`         | number  | entity step or 0.5 | Increment per +/- tap                                      |
 | `debounce_ms`  | number  | `750`            | Delay before sending the temperature change                  |
 | `min_temp`     | number  | entity default   | Override the minimum temperature                             |

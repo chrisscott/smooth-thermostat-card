@@ -87,12 +87,21 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
   public getLayoutOptions() {
     const cfg = this._config;
     const extras = [cfg?.show_modes, cfg?.show_preset, cfg?.show_fan].filter(Boolean).length;
-    const baseRows = this._isRange ? 3 : 2;
+    const targetRows = this._isRange ? 2 : 1;
+    if (cfg?.full_width) {
+      const bodyRows = Math.max(targetRows, extras || 1);
+      return {
+        grid_columns: 4,
+        grid_rows: 1 + bodyRows,
+        grid_min_columns: 2,
+        grid_min_rows: 1 + targetRows,
+      };
+    }
     return {
       grid_columns: 2,
-      grid_rows: baseRows + extras,
+      grid_rows: 1 + targetRows + extras,
       grid_min_columns: 2,
-      grid_min_rows: baseRows,
+      grid_min_rows: 1 + targetRows,
     };
   }
 
@@ -267,6 +276,12 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
     const cardClasses: string[] = [];
     if (isOff) cardClasses.push('off');
     if (isUnavailable) cardClasses.push('unavailable');
+    if (this._config.full_width) cardClasses.push('full-width');
+
+    const showModes = this._config.show_modes && !!attrs.hvac_modes?.length;
+    const showPreset = this._config.show_preset && !!attrs.preset_modes?.length;
+    const showFan = this._config.show_fan && !!attrs.fan_modes?.length;
+    const hasControls = showModes || showPreset || showFan;
 
     return html`
       <ha-card class=${cardClasses.join(' ')}>
@@ -284,17 +299,22 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
             : nothing}
         </div>
 
-        ${this._isRange
-          ? this._renderRangeRows(attrs, disabled, unitChar)
-          : this._renderSingleRow(attrs, disabled, unitChar)}
-
-        ${this._config.show_modes && attrs.hvac_modes?.length
-          ? this._renderModes(attrs, stateObj)
-          : nothing}
-        ${this._config.show_preset && attrs.preset_modes?.length
-          ? this._renderPresets(attrs)
-          : nothing}
-        ${this._config.show_fan && attrs.fan_modes?.length ? this._renderFans(attrs) : nothing}
+        <div class="body">
+          <div class="targets">
+            ${this._isRange
+              ? this._renderRangeRows(attrs, disabled, unitChar)
+              : this._renderSingleRow(attrs, disabled, unitChar)}
+          </div>
+          ${hasControls
+            ? html`
+                <div class="controls">
+                  ${showModes ? this._renderModes(attrs, stateObj) : nothing}
+                  ${showPreset ? this._renderPresets(attrs) : nothing}
+                  ${showFan ? this._renderFans(attrs) : nothing}
+                </div>
+              `
+            : nothing}
+        </div>
       </ha-card>
     `;
   }
