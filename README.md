@@ -23,6 +23,12 @@ A compact, debounced thermostat card for Home Assistant Lovelace. Designed for t
       <sub>Compact — header + cool / heat rows</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="images/preview-full-width.png" alt="Full-width layout, target temp on the left and chips on the right" width="640"><br>
+      <sub><b>Full width</b> — target temp on the left, mode chips on the right</sub>
+    </td>
+  </tr>
 </table>
 
 ## Features
@@ -32,6 +38,7 @@ A compact, debounced thermostat card for Home Assistant Lovelace. Designed for t
 - **Full GUI editor** — all options configurable from the dashboard, no YAML required
 - **Range thermostats supported** — handles `target_temp_high` / `target_temp_low` for `heat_cool` mode
 - **Compact layout** — uses container queries to shrink gracefully
+- **Full-width layout** — optional wide layout splits target temp and chips into two columns when there's room, falls back to stacked on mobile
 - **Optional rows** — toggle HVAC modes, presets, and fan modes independently
 
 ## Install
