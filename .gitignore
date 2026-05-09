@@ -4,6 +4,3 @@ dist/
 .DS_Store
 .vscode/
 .idea/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
