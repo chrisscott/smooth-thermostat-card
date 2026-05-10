@@ -289,7 +289,7 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
           <ha-state-icon
             .hass=${this.hass}
             .stateObj=${stateObj}
-            .icon=${this._config.icon}
+            .icon=${this._config.icon ?? HVAC_MODE_ICONS[stateObj.state]}
           ></ha-state-icon>
           <div class="name" title=${name}>${name}</div>
           ${this._config.show_current && attrs.current_temperature != null
