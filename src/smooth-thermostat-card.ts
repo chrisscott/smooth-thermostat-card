@@ -278,6 +278,17 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
     if (isUnavailable) cardClasses.push('unavailable');
     if (this._config.full_width) cardClasses.push('full-width');
 
+    const actionToMode: Record<string, string> = {
+      heating: 'heat',
+      preheating: 'heat',
+      defrosting: 'heat',
+      cooling: 'cool',
+      drying: 'dry',
+      fan: 'fan_only',
+    };
+    const activeMode = attrs.hvac_action ? actionToMode[attrs.hvac_action] : undefined;
+    const iconClasses = activeMode ? `active mode-${activeMode}` : '';
+
     const showModes = this._config.show_modes && !!attrs.hvac_modes?.length;
     const showPreset = this._config.show_preset && !!attrs.preset_modes?.length;
     const showFan = this._config.show_fan && !!attrs.fan_modes?.length;
@@ -287,9 +298,10 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
       <ha-card class=${cardClasses.join(' ')}>
         <div class="header" @click=${this._handleMore} role="button" tabindex="0">
           <ha-state-icon
+            class=${iconClasses}
             .hass=${this.hass}
             .stateObj=${stateObj}
-            .icon=${this._config.icon}
+            .icon=${this._config.icon ?? HVAC_MODE_ICONS[stateObj.state]}
           ></ha-state-icon>
           <div class="name" title=${name}>${name}</div>
           ${this._config.show_current && attrs.current_temperature != null

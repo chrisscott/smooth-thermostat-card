@@ -31,6 +31,26 @@ export const cardStyles = css`
     color: var(--state-icon-color, var(--primary-color));
     --mdc-icon-size: 22px;
     flex-shrink: 0;
+    transition: color 0.2s ease;
+  }
+  .header ha-state-icon.active {
+    animation: sth-icon-pulse 2.4s ease-in-out infinite;
+  }
+  .header ha-state-icon.active.mode-heat {
+    color: var(--state-climate-heat-color, #ff8100);
+  }
+  .header ha-state-icon.active.mode-cool {
+    color: var(--state-climate-cool-color, #2b9af9);
+  }
+  .header ha-state-icon.active.mode-dry {
+    color: var(--state-climate-dry-color, #efbd07);
+  }
+  .header ha-state-icon.active.mode-fan_only {
+    color: var(--state-climate-fan_only-color, #8a8a8a);
+  }
+  @keyframes sth-icon-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
   }
 
   .name {
