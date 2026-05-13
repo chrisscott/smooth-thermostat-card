@@ -17,6 +17,7 @@ export interface SmoothThermostatCardConfig extends LovelaceCardConfig {
 
 export interface ClimateAttributes {
   hvac_modes?: string[];
+  hvac_action?: string;
   current_temperature?: number | null;
   temperature?: number | null;
   target_temp_high?: number | null;
