@@ -27,30 +27,48 @@ export const cardStyles = css`
     user-select: none;
   }
 
-  .header ha-state-icon {
-    color: var(--state-icon-color, var(--primary-color));
-    --mdc-icon-size: 22px;
+  .icon-badge {
+    --badge-color: var(--state-icon-color, var(--primary-text-color));
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
-    transition: color 0.2s ease;
+    background: rgba(127, 127, 127, 0.18);
+    color: var(--badge-color);
+    --mdc-icon-size: 20px;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   }
-  .header ha-state-icon.active {
-    animation: sth-icon-pulse 2.4s ease-in-out infinite;
+  .icon-badge.mode-heat,
+  .icon-badge.mode-heat_cool { --badge-color: var(--state-climate-heat-color, #ff8100); }
+  .icon-badge.mode-cool { --badge-color: var(--state-climate-cool-color, #2b9af9); }
+  .icon-badge.mode-dry { --badge-color: var(--state-climate-dry-color, #efbd07); }
+  .icon-badge.mode-fan_only { --badge-color: var(--state-climate-fan_only-color, #8a8a8a); }
+  .icon-badge.mode-auto { --badge-color: var(--state-climate-auto-color, #44739e); }
+  .icon-badge.mode-off { --badge-color: var(--secondary-text-color); }
+  .icon-badge.mode-unavailable { --badge-color: var(--disabled-text-color, #6b6b6b); }
+
+  /* Idle: tinted background, mode-colored icon */
+  .icon-badge.idle {
+    background: color-mix(in srgb, var(--badge-color) 18%, transparent);
   }
-  .header ha-state-icon.active.mode-heat {
-    color: var(--state-climate-heat-color, #ff8100);
+
+  /* Active: solid colored badge with contrasting icon + soft pulse */
+  .icon-badge.active {
+    background: var(--badge-color);
+    color: var(--text-primary-color, #fff);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--badge-color) 55%, transparent);
+    animation: sth-badge-pulse 2.4s ease-in-out infinite;
   }
-  .header ha-state-icon.active.mode-cool {
-    color: var(--state-climate-cool-color, #2b9af9);
+  @keyframes sth-badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--badge-color) 55%, transparent); }
+    50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--badge-color) 0%, transparent); }
   }
-  .header ha-state-icon.active.mode-dry {
-    color: var(--state-climate-dry-color, #efbd07);
-  }
-  .header ha-state-icon.active.mode-fan_only {
-    color: var(--state-climate-fan_only-color, #8a8a8a);
-  }
-  @keyframes sth-icon-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.65; }
+
+  .icon-badge ha-state-icon {
+    display: inline-flex;
   }
 
   .name {
@@ -314,6 +332,11 @@ export const cardStyles = css`
     .step {
       width: 32px;
       height: 32px;
+      --mdc-icon-size: 18px;
+    }
+    .icon-badge {
+      width: 30px;
+      height: 30px;
       --mdc-icon-size: 18px;
     }
     .chip {
