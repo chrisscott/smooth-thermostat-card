@@ -45,6 +45,7 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
   @state() private _pendingLow: number | null = null;
 
   private _debounceTimer?: number;
+  private _pendingClearTimer?: number;
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./editor');
@@ -111,6 +112,10 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
       clearTimeout(this._debounceTimer);
       this._debounceTimer = undefined;
     }
+    if (this._pendingClearTimer) {
+      clearTimeout(this._pendingClearTimer);
+      this._pendingClearTimer = undefined;
+    }
   }
 
   protected updated(changed: PropertyValues): void {
@@ -118,16 +123,14 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
     const stateObj = this._stateObj;
     if (!stateObj) return;
     const attrs = stateObj.attributes as ClimateAttributes;
+    // Match within half a step so HA rounding doesn't strand the pending state.
+    const tol = this._step() / 2 + 1e-6;
+    const matches = (p: number | null, a: number | null | undefined): boolean =>
+      p !== null && typeof a === 'number' && Math.abs(a - p) <= tol;
 
-    if (this._pendingTemp !== null && attrs.temperature === this._pendingTemp) {
-      this._pendingTemp = null;
-    }
-    if (this._pendingHigh !== null && attrs.target_temp_high === this._pendingHigh) {
-      this._pendingHigh = null;
-    }
-    if (this._pendingLow !== null && attrs.target_temp_low === this._pendingLow) {
-      this._pendingLow = null;
-    }
+    if (matches(this._pendingTemp, attrs.temperature)) this._pendingTemp = null;
+    if (matches(this._pendingHigh, attrs.target_temp_high)) this._pendingHigh = null;
+    if (matches(this._pendingLow, attrs.target_temp_low)) this._pendingLow = null;
   }
 
   private get _stateObj(): HassEntity | undefined {
@@ -192,6 +195,10 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
 
   private _scheduleSetTemperature(): void {
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
+    if (this._pendingClearTimer) {
+      clearTimeout(this._pendingClearTimer);
+      this._pendingClearTimer = undefined;
+    }
     const delay = this._config?.debounce_ms ?? DEFAULT_DEBOUNCE_MS;
     this._debounceTimer = window.setTimeout(() => this._commitTemperature(), delay);
   }
@@ -220,6 +227,17 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
     if (hasChange) {
       this.hass.callService('climate', 'set_temperature', data);
     }
+
+    // Fallback: if HA never echoes a matching state (e.g. value already equals
+    // the current setpoint, or the entity is slow), clear pending after a beat
+    // so the UI doesn't stay stuck in the "pending" pulse.
+    if (this._pendingClearTimer) clearTimeout(this._pendingClearTimer);
+    this._pendingClearTimer = window.setTimeout(() => {
+      this._pendingTemp = null;
+      this._pendingHigh = null;
+      this._pendingLow = null;
+      this._pendingClearTimer = undefined;
+    }, 2500);
   }
 
   private _setHvacMode(mode: string): void {
@@ -287,7 +305,10 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
       fan: 'fan_only',
     };
     const activeMode = attrs.hvac_action ? actionToMode[attrs.hvac_action] : undefined;
-    const iconClasses = activeMode ? `active mode-${activeMode}` : '';
+    const badgeMode = activeMode ?? (isOff ? 'off' : isUnavailable ? 'unavailable' : stateObj.state);
+    const badgeClasses = ['icon-badge', `mode-${badgeMode}`];
+    if (activeMode) badgeClasses.push('active');
+    else if (!isOff && !isUnavailable) badgeClasses.push('idle');
 
     const showModes = this._config.show_modes && !!attrs.hvac_modes?.length;
     const showPreset = this._config.show_preset && !!attrs.preset_modes?.length;
@@ -297,12 +318,13 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card class=${cardClasses.join(' ')}>
         <div class="header" @click=${this._handleMore} role="button" tabindex="0">
-          <ha-state-icon
-            class=${iconClasses}
-            .hass=${this.hass}
-            .stateObj=${stateObj}
-            .icon=${this._config.icon ?? HVAC_MODE_ICONS[stateObj.state]}
-          ></ha-state-icon>
+          <div class=${badgeClasses.join(' ')}>
+            <ha-state-icon
+              .hass=${this.hass}
+              .stateObj=${stateObj}
+              .icon=${this._config.icon ?? HVAC_MODE_ICONS[stateObj.state]}
+            ></ha-state-icon>
+          </div>
           <div class="name" title=${name}>${name}</div>
           ${this._config.show_current && attrs.current_temperature != null
             ? html`<div class="current">
