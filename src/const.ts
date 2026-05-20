@@ -1,4 +1,4 @@
-export const CARD_VERSION = '0.2.1';
+export const CARD_VERSION = '0.2.2';
 export const CARD_NAME = 'smooth-thermostat-card';
 export const EDITOR_NAME = 'smooth-thermostat-card-editor';
 
