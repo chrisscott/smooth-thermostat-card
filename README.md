@@ -5,22 +5,18 @@ A compact, debounced thermostat card for Home Assistant Lovelace. Designed for t
 <table>
   <tr>
     <td align="center">
-      <img src="images/preview-single-full.png" alt="Single setpoint, all options" width="300"><br>
-      <sub><b>Single setpoint</b> — heat / cool / auto, all rows enabled</sub>
+      <img src="images/preview-single-full.png" alt="Single setpoint with mode, preset, and fan rows" width="300"><br>
+      <sub><b>All rows</b> — HVAC modes, presets, and fan</sub>
     </td>
     <td align="center">
-      <img src="images/preview-range-full.png" alt="Range setpoint, all options" width="300"><br>
-      <sub><b>Range setpoint</b> — heat_cool, all rows enabled</sub>
+      <img src="images/preview-single-compact.png" alt="Compact card, header and target temp only" width="300"><br>
+      <sub><b>Compact</b> — header + target temp only</sub>
     </td>
   </tr>
   <tr>
-    <td align="center">
-      <img src="images/preview-single-compact.png" alt="Single setpoint, compact" width="300"><br>
-      <sub>Compact — header + target temp only</sub>
-    </td>
-    <td align="center">
-      <img src="images/preview-range-compact.png" alt="Range setpoint, compact" width="300"><br>
-      <sub>Compact — header + cool / heat rows</sub>
+    <td align="center" colspan="2">
+      <img src="images/preview-two-up.png" alt="Two compact cards side by side" width="640"><br>
+      <sub><b>Two aside</b> — compact cards fit two across on a phone</sub>
     </td>
   </tr>
   <tr>
