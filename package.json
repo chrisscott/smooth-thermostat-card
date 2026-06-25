@@ -17,7 +17,7 @@
     "climate",
     "hacs"
   ],
-  "author": "",
+  "author": "Chris Scott <chris@iamzed.com>",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
