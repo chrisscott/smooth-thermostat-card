@@ -97,4 +97,4 @@ npm run watch       # rebuild on change
 
 ## License
 
-MIT
+Released under the [MIT License](LICENSE).
