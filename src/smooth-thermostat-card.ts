@@ -211,12 +211,12 @@ export class SmoothThermostatCard extends LitElement implements LovelaceCard {
     let hasChange = false;
 
     if (this._isRange) {
-      if (this._pendingHigh !== null) {
-        data.target_temp_high = this._pendingHigh;
-        hasChange = true;
-      }
-      if (this._pendingLow !== null) {
-        data.target_temp_low = this._pendingLow;
+      // HA's schema requires target_temp_high and target_temp_low together,
+      // so fill the untouched side from the current state.
+      if (this._pendingHigh !== null || this._pendingLow !== null) {
+        const attrs = stateObj.attributes as ClimateAttributes;
+        data.target_temp_high = this._pendingHigh ?? attrs.target_temp_high;
+        data.target_temp_low = this._pendingLow ?? attrs.target_temp_low;
         hasChange = true;
       }
     } else if (this._pendingTemp !== null) {
